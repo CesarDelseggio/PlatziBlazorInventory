@@ -1,0 +1,34 @@
+﻿@using Entities;
+@using Business.Interfaces;
+@inject Business.Interfaces.IServices<Category> CategoryService;
+@inject NavigationManager NavManager;
+
+<EditForm Model="category">
+    <div class="form-group">
+        <label>Código</label>
+        <InputText 
+            @bind-Value="category.Id" 
+            class="form-control">
+        </InputText>
+    </div>
+    <div class="form-group">
+        <label>Nombre</label>
+        <InputText 
+            @bind-Value="category.Name"
+            class="form-control">
+        </InputText>
+    </div>
+    <div class="form-group">
+        <button @onclick="Save" class="btn btn-primary">Guardar</button>
+    </div>
+</EditForm>
+
+@code {
+    Category category = new Category();
+
+    private void Save()
+    {
+        CategoryService.Add(category);
+        NavManager.NavigateTo("/category/list");
+    }
+}

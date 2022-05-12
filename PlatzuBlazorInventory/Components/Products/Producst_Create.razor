@@ -1,0 +1,64 @@
+﻿@using Entities;
+@using Business.Interfaces;
+@using Business.Services;
+@using Microsoft.EntityFrameworkCore
+@inject IServices<Product> ProductService;
+@inject IServices<Category> CategoryService;
+@inject NavigationManager NavManager;
+
+<h3>Listado de Productos</h3>
+
+<div>
+    <EditForm Model="Entity" class="form">
+        <div class="form-group">
+            <label>Codigo</label>
+            <InputText class="form-control" @bind-Value="Entity.Id"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label>Nombre</label>
+            <InputText class="form-control" @bind-Value="Entity.Name"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label>Descripción</label>
+            <InputTextArea class="form-control" @bind-Value="Entity.Description"></InputTextArea>
+        </div>
+
+        <div class="form-group">
+            <label>Categoría</label>
+            <InputSelect @bind-Value="Entity.CategoryId" class="form-control">
+                <option value=''>Selecciar Categoría</option>
+
+                @foreach (var item in Categories)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="form-group">
+            <button @onclick="Save" class="btn btn-primary">Guardar</button>
+        </div>
+    </EditForm>
+</div>
+
+
+@code {
+    Product Entity = new Product();
+    List<Category> Categories = new List<Category>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+
+        Categories = CategoryService.GetAll();
+    }
+
+    public void Save()
+    {
+        ProductService.Add(Entity);
+
+        NavManager.NavigateTo("/product/list");
+    }
+
+}

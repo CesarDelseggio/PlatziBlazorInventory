@@ -1,0 +1,74 @@
+﻿@using Entities;
+@using Business.Interfaces;
+@inject Business.Interfaces.IServices<Storage> StorageService;
+@inject Business.Interfaces.IServices<WereHouse> WereHouseService;
+@inject Business.Interfaces.IServices<Product> ProductService;
+@inject NavigationManager NavManager;
+
+<EditForm Model="storage">
+    <div class="form-group">
+        <InputSelect class="form-control" @bind-Value="storage.WereHouseId">
+            <option>Seleccionar Depósito...</option>
+            @foreach (var item in wereHouses)
+           {
+               <option value="@item.Id">@item.Name</option>
+           }
+        </InputSelect>
+    </div>
+    
+    <div class="form-group">
+        <InputSelect class="form-control" @bind-Value="storage.ProductId">
+            <option>Seleccionar Producto...</option>
+            @foreach (var item in Products)
+           {
+               <option value="@item.Id">@item.Name</option>
+           }
+        </InputSelect>
+    </div>
+    
+    <div class="form-group">
+        <InputNumber class="form-control" @bind-Value="storage.PartianlCount"></InputNumber>
+    </div>
+
+    <div class="form-group">
+        <button @onclick="Save" class="btn btn-primary">Guardar</button>
+    </div>
+</EditForm>
+
+<div>
+    <label>@message</label>
+</div>
+
+@code {
+    Storage storage = new Storage();
+    List<WereHouse> wereHouses = new List<WereHouse>();
+    List<Product> Products = new List<Product>();
+
+    string message = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        wereHouses = WereHouseService.GetAll();
+        Products = ProductService.GetAll();
+    }
+
+    private void Save()
+    {
+        message = "";
+
+        storage.Id = Guid.NewGuid().ToString();
+        storage.LastUpdate = DateTime.Now;
+
+        var resp = StorageService.Exist(storage);
+
+        if(resp){ 
+            message = "El producto ya existe...";
+            return;
+        }
+        else
+        {
+            StorageService.Add(storage);
+            NavManager.NavigateTo("/storage/list");   
+        }
+    }
+}

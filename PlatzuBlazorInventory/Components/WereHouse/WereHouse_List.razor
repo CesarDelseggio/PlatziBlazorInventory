@@ -1,0 +1,39 @@
+﻿@using Entities;
+@using Business;
+@using Business.Interfaces;
+@inject Business.Interfaces.IServices<WereHouse> WereHouseServices;
+
+<hr />
+    <a href="/wereHouse/create">Crear</a>
+<hr />
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>CÓDIGO</th>
+            <th>NOMBRE</th>
+            <th>ACCIÓN</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in wereHouses)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td><a href="/wereHouse/update/@item.Id">Editar</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<WereHouse> wereHouses = new List<WereHouse>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        wereHouses = WereHouseServices.GetAll();
+    }
+}

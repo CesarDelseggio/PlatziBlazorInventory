@@ -1,0 +1,39 @@
+﻿@using Entities;
+@using Business;
+@using Business.Interfaces;
+@inject Business.Interfaces.IServices<Category> CategoryServices;
+
+<hr />
+    <a href="/category/create">Crear</a>
+<hr />
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>CÓDIGO</th>
+            <th>NOMBRE</th>
+            <th>ACCIÓN</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in categories)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td><a href="/category/update/@item.Id">Editar</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<Category> categories = new List<Category>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        categories = CategoryServices.GetAll();
+    }
+}

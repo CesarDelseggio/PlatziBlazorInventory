@@ -1,0 +1,43 @@
+﻿@using Entities;
+@using Business;
+@using Business.Interfaces;
+@inject Business.Interfaces.IServices<Storage> StorageServices;
+
+<hr />
+    <a href="/storage/create">Crear</a>
+<hr />
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>CÓDIGO</th>
+            <th>ÚLTIMA ACT</th>
+            <th>CANTIDAD PARCIAL</th>
+            <th>PRODUCTO</th>
+            <th>ACCIÓN</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in storages)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.LastUpdate</td>
+                <td>@item.PartianlCount</td>
+                <td>@item.ProductId</td>
+                <td><a href="/storage/update/@item.Id">Editar</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<Storage> storages = new List<Storage>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        storages = StorageServices.GetAll();
+    }
+}
